@@ -86,7 +86,7 @@ class Libreria():
 
         for libro in self.libros:
             if libro.autor == autor:
-                librosAutor.append(libro.__str__())
+                librosAutor.append(libro)
 
         return librosAutor
 
@@ -96,7 +96,7 @@ class Libreria():
 
         for libro in self.libros:
             if libro.categoria == categoria:
-                librosCategoria.append(libro.__str__())
+                librosCategoria.append(libro)
 
         return librosCategoria
 
@@ -108,15 +108,24 @@ class Libreria():
     # cargar los libros desde un archivo en formato csv separados por ;
     # gestionando las excepciones
     def cargar_libros(self):
+        try:
+            fichero = open("libros.txt", "r")
+        except:
+            return False
+
+        fichero.readline()
+
+        fichero.close()
+        return True
+
 
 
     # grabar los libros desde un archivo en formato csv separados por ;
     # gestionando las excepciones
     def grabar_libros(self):
         try:
-            lectura = open("datosLibros.csv", "r")
+            fichero = open("libros.txt", "w")
         except:
-            print("No existe el fichero que contiene los datos.")
             return False
 
         escritura = "libros.txt"
@@ -171,8 +180,7 @@ class Libreria():
         listaTitulos = []
 
         for libro in self.libros:
-            if libro.titulo not in listaTitulos:
-                listaTitulos.append(libro.titulo)
+            listaTitulos.append(libro.titulo)
 
         return listaTitulos
 
@@ -272,9 +280,15 @@ if __name__ == "__main__":
                 elif opcion_modificar == 4:
                     print(l1.buscar_libro_titulo(input("Introduce el título a buscar: ")))
                 elif opcion_modificar == 5:
-                    print(l1.buscar_libro_categoria(input("Introduce la categoría a buscar: ")))
+                    tLibros = l1.buscar_libro_categoria(input("Introduce la categoría a buscar: "))
+
+                    for libro in tLibros:
+                        print(libro)
                 elif opcion_modificar == 6:
-                    print(l1.buscar_libro_autor(input("Introduce el autor a buscar: ")))
+                    tLibros = l1.buscar_libro_autor(input("Introduce el autor a buscar: "))
+
+                    for libro in tLibros:
+                        print(libro)
                 elif opcion_modificar == 7:
                     print("Volviendo al menú principal.")
         elif opcion == 8:
