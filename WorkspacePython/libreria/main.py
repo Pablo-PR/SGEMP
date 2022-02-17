@@ -102,7 +102,11 @@ class Libreria():
 
 
     def mostrar_libro(self, libro):
-        print(libro)
+        if type(libro) is Libro:
+            print(libro)
+        else:
+            for lib in libro:
+                print(lib)
 
 
     # cargar los libros desde un archivo en formato csv separados por ;
@@ -113,11 +117,15 @@ class Libreria():
         except:
             return False
 
-        fichero.readline()
+        datosLibros = fichero.readlines()
+
+        for lib in datosLibros:
+            dLibro = lib.split(";")
+
+            self.libros.append(Libro(dLibro[0], dLibro[1], dLibro[2].replace("\n", "")))
 
         fichero.close()
         return True
-
 
 
     # grabar los libros desde un archivo en formato csv separados por ;
@@ -128,12 +136,10 @@ class Libreria():
         except:
             return False
 
-        escritura = "libros.txt"
+        for lib in self.libros:
+            fichero.write(lib.titulo + ";" + lib.autor + ";" + lib.categoria + "\n")
 
-        with open(escritura, 'a') as f:
-            f.write(lectura.read())
-
-        lectura.close()
+        fichero.close()
         return True
 
 
@@ -225,11 +231,20 @@ if __name__ == "__main__":
         opcion = int(input("Ingrese una opcion: "))
 
         if opcion == 1:
-            l1.cargar_libros()
+            if l1.cargar_libros():
+                print("Libros cargados correctamente.")
+            else:
+                print("Error al cargar.")
         elif opcion == 2:
-            l1.grabar_libros()
+            if l1.grabar_libros():
+                print("Libros grabados correctamente.")
+            else:
+                print("Error al grabar.")
         elif opcion == 3:
-            l1.agregar_libro()
+            cantidadLibros = int(input("¿Cuántos libros quiere añadir? "))
+
+            for x in range(cantidadLibros):
+                l1.agregar_libro()
         elif opcion == 4: # modificar libro
             opcion_modificar = 0
 
@@ -242,17 +257,26 @@ if __name__ == "__main__":
                 opcion_modificar = int(input("Ingrese una opcion: "))
 
                 if opcion_modificar == 1:
-                    l1.modificar_titulo(input("Introduce el título original: "), input("Introduce el nuevo título: "))
+                    if l1.modificar_titulo(input("Introduce el título original: "), input("Introduce el nuevo título: ")):
+                        print("Título cambiado.")
+                    else:
+                        print("No se ha podido cambiar el título.")
                 elif opcion_modificar == 2:
-                    l1.modificar_autor(input("Introduce el autor original: "), input("Introduce el nuevo autor: "))
+                    if l1.modificar_autor(input("Introduce el autor original: "), input("Introduce el nuevo autor: ")):
+                        print("Autor cambiado.")
+                    else:
+                        print("No se ha podido cambiar el autor.")
                 elif opcion_modificar == 3:
-                    l1.modificar_categoria(input("Introduce la categoría original: "), input("Introduce la nueva categoría: "))
+                    if l1.modificar_categoria(input("Introduce la categoría original: "), input("Introduce la nueva categoría: ")):
+                        print("Categoría cambiada.")
+                    else:
+                        print("No se ha podido cambiar la categoría.")
                 elif opcion_modificar == 4:
                     print("Volviendo al menú principal.")
         elif opcion == 5: # eliminar libro
             titulo = input("Ingrese el titulo del libro a eliminar: ")
             if l1.eliminar_libro(titulo):
-                print("El libro se elimino correctamente")
+                print("El libro se eliminó correctamente")
             else:
                 print("El libro no se pudo eliminar")
         elif opcion == 6: # cantidad de libros
@@ -278,17 +302,28 @@ if __name__ == "__main__":
                 elif opcion_modificar == 3:
                     print("Lista de autores: ", l1.mostrar_autores())
                 elif opcion_modificar == 4:
-                    print(l1.buscar_libro_titulo(input("Introduce el título a buscar: ")))
+                    lib = l1.buscar_libro_titulo(input("Introduce el título a buscar: "))
+                    
+                    if lib is None:
+                        print("No se ha encontrado ningún libro con ese título.")
+                    else:
+                        print(lib)
                 elif opcion_modificar == 5:
                     tLibros = l1.buscar_libro_categoria(input("Introduce la categoría a buscar: "))
 
-                    for libro in tLibros:
-                        print(libro)
+                    if len(tLibros) == 0:
+                        print("No se ha encontrado ninguna categoría con ese nombre.")
+                    else:
+                        for libro in tLibros:
+                            print(libro)
                 elif opcion_modificar == 6:
                     tLibros = l1.buscar_libro_autor(input("Introduce el autor a buscar: "))
 
-                    for libro in tLibros:
-                        print(libro)
+                    if len(tLibros) == 0:
+                        print("No se ha encontrado ningún autor con ese nombre.")
+                    else:
+                        for libro in tLibros:
+                            print(libro)
                 elif opcion_modificar == 7:
                     print("Volviendo al menú principal.")
         elif opcion == 8:
